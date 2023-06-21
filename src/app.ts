@@ -35,6 +35,12 @@
 
 import { createServer, IncomingMessage, ServerResponse } from "http";
 
+import * as fs from 'fs';
+
+import * as url from "url";
+
+import * as path from 'path';
+
 const port = 8080;
 
 const server = createServer((request: IncomingMessage, response: ServerResponse) => {
@@ -42,11 +48,50 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
 
     if (request.url == "/name") {
         if (request.method === "GET") {
-            response.end("hello world");
+            // response.end("hello world");
+
+            // Create files:-
+            fs.open('mynewfile2.txt', 'w', function (err, file) {
+                if (err) throw err;
+                console.log('File open');
+            });
+
+            //Update files:-
+            fs.appendFile('mynewfile.txt', ' Append content', function (err) {
+                if (err) throw err;
+                console.log('File append');
+            });
+
+            fs.writeFile("myFile.txt", "This is node js session", function (err) {
+                if (err) throw err;
+                console.log("File written Sucessfully ")
+            });
+
+            // Read files:-
+            // fs.readFileSync(path.join(__dirname, 'myFile.txt'), { encoding: 'utf-8' })
+
+            // Delete files:-
+            fs.unlink('mynewfile3.txt', function (err) {
+                if (err) throw err;
+                console.log('File deleted!');
+            });
+
+            //Rename files:-
+            fs.rename('mynewfile1.txt', 'myrenamedfile.txt', function (err) {
+                if (err) throw err;
+                console.log('File Renamed!');
+            });
+
+            var adr = 'http://localhost:8080/default.htm?year=2021&month=August&name=anjali&tech=fullstack';
+
+            var q = url.parse(adr, true);
+
+            console.log("🚀 ~ file: app.ts:105 ~ server ~ q:", q)
+
         } else {
             response.end("Worng method for this api");
         }
     }
-})
+});
 
-server.listen(port, () => console.log(`server is listining at port ${port}`))
+server.listen(port, () => console.log(`server is listining at port ${port}`));
