@@ -108,21 +108,21 @@
 //=============================== EVENTS ===============================:- 
 //to generate events:-
 
-import { EventEmitter } from 'events';
+// import { EventEmitter } from 'events';
 
-const eventBroker = new EventEmitter();
+// const eventBroker = new EventEmitter();
 
-eventBroker.on('event-1', () => {
-    console.log("event 1 is fired");
-})
+// eventBroker.on('event-1', () => {
+//     console.log("event 1 is fired");
+// })
 
-eventBroker.on('checkPage', (statusCode, msg) => {
-    console.log(`status code is ${statusCode} and the page is ${msg}`);
-})
+// eventBroker.on('checkPage', (statusCode, msg) => {
+//     console.log(`status code is ${statusCode} and the page is ${msg}`);
+// })
 
-eventBroker.emit('event-1');
+// eventBroker.emit('event-1');
 
-eventBroker.emit('checkPage', 200, 'ok');
+// eventBroker.emit('checkPage', 200, 'ok');
 
 
 
@@ -166,33 +166,60 @@ eventBroker.emit('checkPage', 200, 'ok');
 
 
 //=============================== EMAIL ===============================:-
-import express, { Request, Response, NextFunction } from 'express';
-import nodemailer from 'nodemailer';
+// import express, { Request, Response, NextFunction } from 'express';
+// import nodemailer from 'nodemailer';
 
-const port = 9800;
-const app = express();
+// const port = 9800;
+// const app = express();
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: "anjali.sumfactor@gmail.com", pass: "gothyyshdzkuyiye" }
-});
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: { user: "anjali.sumfactor@gmail.com", pass: "gothyyshdzkuyiye" }
+// });
 
-let mailOptions = {
-    from: "anjali.sumfactor@gmail.com",
-    to: "anjaliruby790@gmail.com",
-    subject: "NODEJS",
-    text: "THIS IS NODEJS TUTORIAL"
-}
+// let mailOptions = {
+//     from: "anjali.sumfactor@gmail.com",
+//     to: "anjaliruby790@gmail.com",
+//     subject: "NODEJS",
+//     text: "THIS IS NODEJS TUTORIAL"
+// }
 
-app.get('/sendEmail', (req: Request, res: Response, next: NextFunction) => {
+// app.get('/sendEmail', (req: Request, res: Response, next: NextFunction) => {
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) return res.status(500).send({ error: error })
+//     transporter.sendMail(mailOptions, (error, info) => {
+//         if (error) return res.status(500).send({ error: error })
 
-        console.log("🚀 ~ file: app.ts:80 ~ transporter.sendMail ~ info:", info)
+//         console.log("🚀 ~ file: app.ts:80 ~ transporter.sendMail ~ info:", info)
 
-        return res.status(200).send({ info: info });
-    });
-});
+//         return res.status(200).send({ info: info });
+//     });
+// });
 
-app.listen(port, () => console.log(`server is listining at port ${port}`));
+// app.listen(port, () => console.log(`server is listining at port ${port}`));
+
+
+
+
+//=============================== SQL Database ===============================:-
+import express, { Application } from 'express';
+import { Server } from 'http';
+import { config } from 'dotenv';
+config();
+
+const app: Application = express();
+
+import { connectNodeDatabase } from '../src/Database/connectDatabase';
+
+import router from '../src/Routes/routes'
+
+const port: number = Number(process.env.PORT);
+
+app.use('/', router);
+
+connectNodeDatabase().then((response) => {
+    console.log(response)
+    const server: Server = app.listen(port, () => console.log(`server is running at port http://localhost:${port}`))
+
+}).catch((error) => {
+    console.log("🚀 ~ file: app.ts:102 ~ connectNodeDatabase ~ error:", error)
+})
