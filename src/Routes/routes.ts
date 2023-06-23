@@ -3,7 +3,6 @@ import { userRegistration } from '../Controller/userController'
 
 const router = Router();
 
-router.get('/', async (req: Request, res: Response) => { res.status(200).send(await userRegistration(req, res)) });
-
+router.get('/registerUser', async (req: Request, res: Response) => { res.status(200).send(await userRegistration(req, res)) });
 
 export default router;
