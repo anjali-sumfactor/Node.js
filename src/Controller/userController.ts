@@ -18,7 +18,7 @@ export const userRegistration = async (req: any, res: any) => {
             // const sqlQuery = `update user_table set f_name='Archana' where token=11223`
 
 
-            //=========================== UPDATE QUERY ===========================
+            //=========================== DELETE QUERY ===========================
             // const sqlQuery = `delete from user_table where token=11223`
 
 
