@@ -63,3 +63,32 @@ export const userRegistration = async (req: any, res: any) => {
         }
     })
 }
+
+
+
+
+//=========================== USER LOGIN ===========================
+export const userlogin = async (req: any, res: any) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let { email, password } = req.body
+
+            const getRecord = `select * from user_table where email='${email}'`
+
+            let resulset: any = await executeQuery(getRecord)
+
+            if (resulset.length == 0) return res.status(404).send({ message: "user Not Found Please Register and try again to login" })
+
+            const match: boolean = await bcrypt.compare(password, resulset[0].password)
+
+            if (match == false) return res.status(400).send("Entered Password is Incorrect")
+
+            return resolve({ message: "User Sucessfully Logged in", data: resulset })
+
+        } catch (error) {
+            console.log("🚀 ~ file: userController.ts:44 ~ returnnewPromise ~ error:", error)
+        }
+    })
+}
+
