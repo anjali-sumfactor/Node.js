@@ -1,13 +1,17 @@
 import { executeQuery } from '../Database/connectDatabase';
+import bcrypt from 'bcrypt';
 
 export const userRegistration = async (req: any, res: any) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            // let { f_name, l_name, email, password, token } = req.body
+            let { f_name, l_name, email, password, token } = req.body
+            console.log(req.body)
 
             //=========================== INSERT QUERY ===========================
-            // const sqlQuery = `insert into user_table (id,f_name,l_name,email,password,token)values(2,'Nidhi', 'rai', 'nidhi@gmail.com', 'nidhi@45', 11223)`
+            // const sqlQuery = `insert into user_table (f_name,l_name,email,password,token)values('${f_name}', '${l_name}', '${email}', '${password}', '${token}')`
+
+            // const sqlQuery = `insert into user_table (f_name,l_name,email,password,token)values("Sakshi", "chaudhary", "sakshi@gmail.com", "sakshi@12345",67432)`
 
 
             //=========================== SELECT QUERY ===========================
@@ -19,11 +23,31 @@ export const userRegistration = async (req: any, res: any) => {
 
 
             //=========================== DELETE QUERY ===========================
-            // const sqlQuery = `delete from user_table where token=11223`
+            // const sqlQuery = `delete from user_table where token=67239`
 
 
             //=========================== JOIN TWO TABLES ===========================
-            const sqlQuery = `SELECT * FROM user_table as a join user_bankdetail as b on a.email= b.email;`
+            // const sqlQuery = `SELECT * FROM user_table as a join user_bankdetail as b on a.email= b.email;`
+
+
+
+            //=========================== AVOID DUPLICACY ===========================
+            const getRecord = `select * from user_table where email='${email}'`
+
+            let resultset: any = await executeQuery(getRecord);
+
+            if (resultset.length > 0) return res.status(400).send({ message: "User already registered please login" });
+            //=======================================================================
+
+
+
+            //=========================== BCRYPT THE PASSWORD ===========================
+            const salt = await bcrypt.genSalt();
+
+            const hashedPassword = await bcrypt.hash(password, salt);
+            //=======================================================================
+
+            const sqlQuery = `insert into user_table (f_name,l_name,email,password,token)values('${f_name}', '${l_name}', '${email}', '${hashedPassword}', '${token}')`
 
             let response = await executeQuery(sqlQuery)
 

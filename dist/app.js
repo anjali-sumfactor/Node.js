@@ -139,7 +139,10 @@ const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const app = (0, express_1.default)();
 const connectDatabase_1 = require("../src/Database/connectDatabase");
+const routes_1 = __importDefault(require("../src/Routes/routes"));
 const port = Number(process.env.PORT);
+app.use(express_1.default.json());
+app.use('/', routes_1.default);
 (0, connectDatabase_1.connectNodeDatabase)().then((response) => {
     console.log(response);
     const server = app.listen(port, () => console.log(`server is running at port http://localhost:${port}`));
