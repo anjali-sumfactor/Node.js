@@ -1,5 +1,6 @@
 import { executeQuery } from '../Database/connectDatabase';
 import bcrypt from 'bcrypt';
+import { generateAcessToken, refreshAcessToken } from '../util/service'
 
 export const userRegistration = async (req: any, res: any) => {
     return new Promise(async (resolve, reject) => {
@@ -84,7 +85,24 @@ export const userlogin = async (req: any, res: any) => {
 
             if (match == false) return res.status(400).send("Entered Password is Incorrect")
 
-            return resolve({ message: "User Sucessfully Logged in", data: resulset })
+
+
+
+
+
+            //=========================== JWT TOKRN ===========================
+            let user: any = { email: email as string, password: password as string }
+
+            let acessToken = generateAcessToken(user)
+
+            console.log("🚀 ~ file: userController.ts:60 ~ returnnewPromise ~ acessToken:", acessToken)
+
+            let refreshToken = refreshAcessToken({ user: user })
+
+            console.log("🚀 ~ file: userController.ts:64 ~ returnnewPromise ~ refreshToken:", refreshToken)
+
+            return resolve({ message: "User Sucessfully Logged in", data: resulset, acessToken: acessToken, refreshToken: refreshToken });
+            //=======================================================================
 
         } catch (error) {
             console.log("🚀 ~ file: userController.ts:44 ~ returnnewPromise ~ error:", error)
@@ -92,3 +110,25 @@ export const userlogin = async (req: any, res: any) => {
     })
 }
 
+
+
+
+
+//=========================== GET ALL USER ===========================
+export const getAllUser = async (req: any, res: any) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const getRecord = `select * from user_table;`
+
+            let resulset: any = await executeQuery(getRecord)
+
+            return resolve(resulset)
+
+        } catch (error) {
+            console.log("🚀 ~ file: userController.ts:89 ~ returnnewPromise ~ error:", error)
+
+        }
+    })
+}
+//=======================================================================
