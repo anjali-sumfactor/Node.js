@@ -214,7 +214,6 @@ import router from '../src/Routes/routes'
 
 const port: number = Number(process.env.PORT);
 
-// app.use(express.json());
 app.use(express.json());
 
 app.use('/', router);
