@@ -152,7 +152,7 @@ export const refreshToken = async (req: any, res: any) => {
             const getRecord = `select * from user_table where email='${email}';`
 
             let resulset: any = await executeQuery(getRecord)
-            console.log("🚀 ~ file: userController.ts:109 ~ returnnewPromise ~ resulset:", resulset)
+            console.log(resulset)
 
             if (resulset.length == 0) return res.sendStatus(403)
 
@@ -160,15 +160,12 @@ export const refreshToken = async (req: any, res: any) => {
 
                 if (error) return res.sendStatus(403)
 
-                const acessToken: string = generateAcessToken({ email: resulset[0].email, password: resulset[1].password })
-
-                // res.json({ token: `Bearer ${acessToken}` })
+                const acessToken: string = generateAcessToken({ email: resulset[0].email, password: resulset[0].password })
 
                 return resolve({ token: `Bearer ${acessToken}` })
             })
-
         } catch (error) {
-            console.log("🚀 ~ file: userController.ts:103 ~ returnnewPromise ~ error:", error)
+            console.log("refresh token error", error)
             res.json({ error: error })
         }
     })
