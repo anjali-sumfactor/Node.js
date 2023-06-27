@@ -1,6 +1,7 @@
 import { executeQuery } from '../Database/connectDatabase';
 import bcrypt from 'bcrypt';
-import { generateAcessToken, refreshAcessToken } from '../util/service'
+import { generateAcessToken, refreshAcessToken } from '../util/service';
+import * as jwt from 'jsonwebtoken';
 
 export const userRegistration = async (req: any, res: any) => {
     return new Promise(async (resolve, reject) => {
@@ -29,6 +30,7 @@ export const userRegistration = async (req: any, res: any) => {
 
             //=========================== JOIN TWO TABLES ===========================
             // const sqlQuery = `SELECT * FROM user_table as a join user_bankdetail as b on a.email= b.email;`
+
 
 
 
@@ -128,6 +130,46 @@ export const getAllUser = async (req: any, res: any) => {
         } catch (error) {
             console.log("🚀 ~ file: userController.ts:89 ~ returnnewPromise ~ error:", error)
 
+        }
+    })
+}
+//=======================================================================
+
+
+
+
+
+//=========================== REFRESH TOKEN ===========================
+export const refreshToken = async (req: any, res: any) => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            let { token, email } = req.body
+
+            if (token == null) return res.sendStatus(401)
+
+            const getRecord = `select * from user_table where email='${email}';`
+
+            let resulset: any = await executeQuery(getRecord)
+            console.log("🚀 ~ file: userController.ts:109 ~ returnnewPromise ~ resulset:", resulset)
+
+            if (resulset.length == 0) return res.sendStatus(403)
+
+            jwt.verify(token, process.env.REFRESH_TOKEN_SECERET as string, (error: unknown, response: unknown) => {
+
+                if (error) return res.sendStatus(403)
+
+                const acessToken: string = generateAcessToken({ email: resulset[0].email, password: resulset[1].password })
+
+                // res.json({ token: `Bearer ${acessToken}` })
+
+                return resolve({ token: `Bearer ${acessToken}` })
+            })
+
+        } catch (error) {
+            console.log("🚀 ~ file: userController.ts:103 ~ returnnewPromise ~ error:", error)
+            res.json({ error: error })
         }
     })
 }
