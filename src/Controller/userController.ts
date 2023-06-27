@@ -152,7 +152,7 @@ export const refreshToken = async (req: any, res: any) => {
             const getRecord = `select * from user_table where email='${email}';`
 
             let resulset: any = await executeQuery(getRecord)
-            console.log(resulset)
+            console.log(resulset);
 
             if (resulset.length == 0) return res.sendStatus(403)
 
