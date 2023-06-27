@@ -208,9 +208,19 @@ config();
 
 const app: Application = express();
 
+import bodyParser from 'body-parser';
+
+import path from 'path';
+
+app.use(bodyParser.json(), bodyParser.urlencoded({ extended: false }));
+
+app.set("views", path.join(__dirname, "public"));
+
+app.set('views-engine', "ejs");
+
 import { connectNodeDatabase } from '../src/Database/connectDatabase';
 
-import router from '../src/Routes/routes'
+import router from '../src/Routes/routes';
 
 const port: number = Number(process.env.PORT);
 
@@ -224,4 +234,4 @@ connectNodeDatabase().then((response) => {
 
 }).catch((error) => {
     console.log("🚀 ~ file: app.ts:102 ~ connectNodeDatabase ~ error:", error)
-})
+});

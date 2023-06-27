@@ -7,8 +7,13 @@ export const userRegistration = async (req: any, res: any) => {
     return new Promise(async (resolve, reject) => {
         try {
 
+            console.log(req.body, "in body");
+            console.log("🚀 ~ file: userController.ts:13 ~ returnnewPromise ~ req.body:", Object.keys(req.body));
+
+            if (Object.keys(req.body).length == 0) return res.status(404).send({ message: "No json body found" });
+
             let { f_name, l_name, email, password, token } = req.body
-            console.log(req.body)
+            console.log(req.body);
 
             //=========================== INSERT QUERY ===========================
             // const sqlQuery = `insert into user_table (f_name,l_name,email,password,token)values('${f_name}', '${l_name}', '${email}', '${password}', '${token}')`
@@ -156,7 +161,7 @@ export const refreshToken = async (req: any, res: any) => {
 
             if (resulset.length == 0) return res.sendStatus(403)
 
-            jwt.verify(token, process.env.REFRESH_TOKEN_SECERET as string, (error: unknown, response: unknown) => {
+            jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string, (error: unknown, response: unknown) => {
 
                 if (error) return res.sendStatus(403)
 
@@ -166,6 +171,24 @@ export const refreshToken = async (req: any, res: any) => {
             })
         } catch (error) {
             console.log("refresh token error", error)
+            res.json({ error: error })
+        }
+    })
+}
+//=======================================================================
+
+
+
+
+
+//=============================== DELETE ================================
+export const logout = async (req: any, res: any) => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            res.status(204).send({ message: "User Sucessfully logged out" })
+        } catch (error) {
+            console.log("🚀 ~ file: userController.ts:103 ~ returnnewPromise ~ error:", error)
             res.json({ error: error })
         }
     })
